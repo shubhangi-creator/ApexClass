@@ -1,0 +1,6 @@
+public class UpdateContactOwnerTriggerHandler {
+public static void updateContactsOwner(List<Account> updateAccounts, Map<Id, Account> oldAccountMap) {
+
+
+}
+}
