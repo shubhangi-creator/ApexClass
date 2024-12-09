@@ -1,6 +1,22 @@
 public class UpdateContactOwnerTriggerHandler {
 public static void updateContactsOwner(List<Account> updateAccounts, Map<Id, Account> oldAccountMap) {
+List<Contact> contactsToUpdate = new List<Contact>();
+Map<Id, Account> accountOwnerChangedMap = new Map<Id, Account> accountOwnerChangeMap();
 
+for(Account acc : updateAccounts) {
+if(acc.OwnerId != oldAccountMap.get(acc.Id).OwnerId) {
+accountOwnerChangedMap.put(acc.Id, acc);
+}
+}
+
+for(Contact con : [Select AccountId, OwnerId from Contact where AccountId IN : accountOwnerChangedMap.keySet()]) {
+con.OwnerId = accountOwnerChangedMap.get(con.AccountId).OwnerId;
+contactsToUpdate.add(con);
+}
+
+if(!contactsToUpdate.isEmpty()) {
+update contactsToUpdate;
+}
 
 }
 }
