@@ -1,0 +1,16 @@
+public class PreventAccDelWithRelOppTriggerHandler {
+public static void preventDeletionIfRelatedOpportunitiesExists(List<Account> accounts){
+Set<Id> accountIds = new Set<Id>();
+for(Account acc : accounts){
+accountIds.add(acc.Id);
+}
+
+List<Account> accountsWithOpportunities = [Select Id, (Select Id from Opportunities) from Account where Id IN : accountIds];
+
+for(Account acc: accountsWithOpportunities){
+if(!acc.Opportunities.isEmpty()) {
+acc.addError('You cannot delete an account with related opportunities.');
+}
+}
+}
+}
