@@ -1,0 +1,45 @@
+public class DuplicateContactToInsertHandler {
+public static void preventDuplicateContacts(List<Contact> newContacts, Map<Id, Contact> oldMap) {
+Set<String> emailSet = new Set<String>();
+Set<String> phoneSet = new Set<String>();
+
+for(Contact con : newContacts) {
+if(oldMap = null) {
+if(con.Email != null) {
+emailSet.add(con.Email);
+}
+if(con.Phone != null) {
+phoneSet.add(con.Phone);
+}
+else {
+Contact oldCon = oldMap.get(con.Id);
+if(con.Email != null && con.Email != oldCon.Email) {
+emailSet.add(con.Email);
+}
+if(con.Phone != null && con.Phone != oldCon.Phone) {
+phoneSet.add(con.Phone);
+}
+}
+}
+List<Contact> existingContacts = [Select Email, Phone from Contact where Email IN : emailSet OR Phone IN : phoneSet];
+Set<String> existingEmails = new Set<String>();
+Set<String> existingPhones = new Set<String>();
+for(Contact con : existingContacts) {
+if(con.Email != null) {
+existingEmails.add(con.Email);
+}
+if(con.Phone != null) {
+existingPhones.add(con.Phone);
+}
+}
+for(Contact con : newContacts) {
+if(existingEmails.contains(con.Email)) {
+con.addError('Duplicate Email : ' + con.Email);
+}
+if(existingPhones.contains(con.Phone)) {
+con.addError('Duplicate Phone : ' + con.Phone);
+}
+}
+
+}
+}
