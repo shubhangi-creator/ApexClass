@@ -1,0 +1,27 @@
+public class OppAmountToAccAnnualRevenueHandler {
+public static void populateAmountOnAccount(List<Opportunity> oppList, Map<Id, Opportunity> oldMap) {
+Set<Id> accIds = Set<Id>();
+for(Opportunity opp : oppList) {
+if(oldMap !=null) {
+if(opp.AccountID != null && opp.Amount != null && opp.Amount != oldMap.get(opp.Id).Amount) {
+accIds.add(opp.AccountId);
+}
+}
+else if(opp.AccountId != null && opp.Amount != null) {
+accIds.add(opp.AccountId);
+}
+}
+
+List<Account> accountList = [Select Id, AnnualRevenue, (Select Id, Amount from Opportunities) from Account where Id IN : accIds ];
+if(!accountList.isEmpty()) {
+for(Accoutn account : accountList) {
+Decimal totalAmount = 0;
+for(Opportunity opp : account.Opportunities) {
+totalAmount += (opp.Amoutn != null ? opp.Amount : 0);
+}
+account.AnnualRevenue = totalAmount ;
+}
+}
+update accountList;
+}
+}
